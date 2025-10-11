@@ -1,0 +1,19 @@
+<h2>Payment</h2>
+<script src="https://js.stripe.com/v3/"></script>
+<button id="pay-button">Pay Now</button>
+<script>
+  const stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
+  stripe.confirmCardPayment("{{ client_secret }}", {
+    payment_method: {
+      card: {token: "tok_visa"}, // Replace with real Stripe Elements card input
+    }
+  }).then(result => {
+    if (result.error) {
+      alert(result.error.message);
+    } else {
+      window.location.href = "{% url 'orders:order_success' order.pk %}";
+    }
+  });
+</script>
+
+

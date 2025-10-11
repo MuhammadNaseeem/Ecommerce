@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}E-Shop{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-gray-200 font-sans">
+
+<!-- Navbar -->
+<nav class="bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-600 shadow-xl sticky top-0 z-50 backdrop-blur-md">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <!-- Logo -->
+        <a href="{% url 'core:home' %}" class="text-3xl font-extrabold text-white tracking-wide hover:scale-105 transform transition duration-300">
+            <span class="bg-white text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-500 to-red-500">E</span>-Shop
+        </a>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center space-x-8">
+            <a href="{% url 'core:home' %}" class="text-white/90 hover:text-yellow-300 font-medium transition">Home</a>
+
+<!-- Categories Dropdown -->
+<div class="relative group inline-block">
+    <button class="text-white/90 hover:text-yellow-300 font-medium flex items-center transition px-4 py-2">
+        Categories
+        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+    </button>
+    <div class="absolute left-0 mt-2 w-56 bg-gray-800/95 backdrop-blur-md border border-gray-700 rounded-xl shadow-xl opacity-0 
+                group-hover:opacity-100 group-hover:visible invisible 
+                transition-all duration-300 transform scale-95 group-hover:scale-100 z-50">
+        
+        <!-- 'All' Button -->
+        <a href="{% url 'products:product_list' %}" 
+           class="block px-5 py-3 text-gray-200 font-medium hover:bg-gradient-to-r hover:from-indigo-500 hover:to-purple-500 hover:text-white transition">
+            All
+        </a>
+
+        {% for category in categories %}
+            <a href="{% url 'products:product_list_by_category' category.slug %}" 
+               class="block px-5 py-3 text-gray-200 font-medium hover:bg-gradient-to-r hover:from-indigo-500 hover:to-purple-500 hover:text-white transition">
+                {{ category.name }}
+            </a>
+        {% empty %}
+            <span class="block px-5 py-3 text-gray-400">No categories</span>
+        {% endfor %}
+    </div>
+</div>
+
+            <a href="#" class="text-white/90 hover:text-yellow-300 font-medium transition">About</a>
+            <a href="{% url 'core:contact' %}" class="text-white/90 hover:text-yellow-300 font-medium transition">Contact</a>
+
+            <!-- Admin Dropdown -->
+            {% if user.is_staff %}
+            <div class="relative group inline-block">
+                <button class="text-white/90 hover:text-yellow-300 font-medium flex items-center transition px-4 py-2">
+                    Admin
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="absolute left-0 mt-2 w-48 bg-gray-800/95 backdrop-blur-md border border-gray-700 rounded-xl shadow-xl opacity-0 
+                            group-hover:opacity-100 group-hover:visible invisible 
+                            transition-all duration-300 transform scale-95 group-hover:scale-100 z-50">
+                    <a href="{% url 'core:dashboard' %}" class="block px-5 py-3 text-gray-200 hover:bg-indigo-500 hover:text-white transition">Dashboard</a>
+                    <a href="{% url 'core:products_list' %}" class="block px-5 py-3 text-gray-200 hover:bg-indigo-500 hover:text-white transition">Products</a>
+                    <a href="{% url 'core:orders_list' %}" class="block px-5 py-3 text-gray-200 hover:bg-indigo-500 hover:text-white transition">Orders</a>
+                    <a href="{% url 'core:coupons_list' %}" class="block px-5 py-3 text-gray-200 hover:bg-indigo-500 hover:text-white transition">Coupons</a>
+                    <a href="{% url 'core:customers_list' %}" class="block px-5 py-3 text-gray-200 hover:bg-indigo-500 hover:text-white transition">Customers</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Search & Actions -->
+        <div class="flex items-center space-x-5">
+            <!-- Search -->
+            <div class="hidden md:block">
+                <input type="text" placeholder="Search products..."
+                       class="border-0 px-4 py-2 rounded-full shadow-md bg-gray-800 text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-yellow-400 focus:outline-none w-56">
+            </div>
+
+            <!-- Cart -->
+            <a href="{% url 'cart:cart_detail' %}" class="relative text-white hover:text-yellow-300 transition">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m5-9v9m4-9v9m4-9l2 9"/>
+                </svg>
+                <span class="absolute -top-1 -right-2 text-xs bg-red-500 text-white rounded-full px-1">
+                    {{ cart_items|length|default:0 }}
+                </span>
+            </a>
+
+            <!-- Auth Buttons -->
+            {% if user.is_authenticated %}
+            <!-- User Dropdown -->
+            <div class="relative group inline-block">
+                <button class="bg-white/20 text-white px-5 py-2 rounded-full flex items-center space-x-2 hover:bg-white/30 transition">
+                    <span>{{ user.username }}</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="absolute right-0 mt-2 w-48 bg-gray-800/95 backdrop-blur-md border border-gray-700 rounded-xl shadow-xl opacity-0 
+                            group-hover:opacity-100 group-hover:visible invisible 
+                            transition-all duration-300 transform scale-95 group-hover:scale-100 z-50">
+                    <a href="{% url 'accounts:profile' %}" 
+                       class="block px-5 py-3 text-gray-200 hover:bg-gradient-to-r hover:from-indigo-500 hover:to-purple-500 hover:text-white transition">
+                        Profile
+                    </a>
+                    <a href="{% url 'accounts:logout' %}" 
+                       class="block px-5 py-3 text-red-400 hover:bg-red-600 hover:text-white transition">
+                        Logout
+                    </a>
+                </div>
+            </div>
+            {% else %}
+                <a href="{% url 'accounts:login' %}" class="hidden md:inline-block bg-white/20 text-white px-5 py-2 rounded-full hover:bg-white/30 transition">Login</a>
+                <a href="{% url 'accounts:signup' %}" class="hidden md:inline-block bg-yellow-400 text-gray-900 font-semibold px-5 py-2 rounded-full hover:bg-yellow-500 transition">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+
+
+    <!-- Mobile toggle script -->
+    <script>
+        document.getElementById('mobile-menu-button').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+    </script>
+
+    <!-- Toast Notifications -->
+    {% if messages %}
+    <div class="fixed top-4 right-4 space-y-3 z-50">
+        {% for message in messages %}
+            <div class="px-4 py-3 rounded-lg shadow-lg text-sm font-medium animate-fade-in-down
+                        {% if message.tags == 'success' %} bg-green-600 text-white 
+                        {% elif message.tags == 'error' %} bg-red-600 text-white
+                        {% elif message.tags == 'warning' %} bg-yellow-400 text-gray-900
+                        {% else %} bg-gray-200 text-gray-900 {% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <style>
+        @keyframes fade-in-down {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-down {
+            animation: fade-in-down 0.5s ease-out;
+        }
+    </style>
+    {% endif %}
+
+    <!-- Page Content -->
+    <main class="container mx-auto px-6 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 mt-10 shadow-inner">
+        <div class="container mx-auto px-6 py-6 text-center text-gray-400">
+            &copy; {% now "Y" %} E-Shop. All rights reserved.
+        </div>
+    </footer>
+
+</body>
+</html>
+
+

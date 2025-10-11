@@ -1,0 +1,11 @@
+<h1>Payment Successful!</h1>
+<p>Thank you for your payment via PayPal.</p>
+
+{% if capture %}
+<p>Transaction ID: {{ capture.purchase_units.0.payments.captures.0.id }}</p>
+<p>Amount Paid: {{ capture.purchase_units.0.payments.captures.0.amount.value }} {{ capture.purchase_units.0.payments.captures.0.amount.currency_code }}</p>
+{% endif %}
+
+<a href="{% url 'orders:checkout' %}">Return to Shop</a>
+
+

@@ -1,0 +1,43 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="max-w-6xl mx-auto p-6">
+    <h2 class="text-3xl font-bold text-indigo-600 mb-6">My Addresses</h2>
+    
+    <a href="{% url 'accounts:address_add' %}" 
+       class="inline-block mb-6 px-6 py-2 bg-gradient-to-r from-pink-500 to-yellow-400 text-white font-semibold rounded-lg shadow-lg hover:scale-105 transform transition">
+        + Add New Address
+    </a>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for address in addresses %}
+        <div class="bg-white shadow-lg rounded-xl p-6 border-l-4 border-indigo-500 hover:shadow-2xl transition">
+            <div class="flex justify-between items-start">
+                <span class="text-sm font-semibold text-indigo-600 uppercase">{{ address.get_address_type_display }}</span>
+                {% if address.default %}
+                    <span class="text-xs bg-green-200 text-green-800 px-2 py-1 rounded-full">Default</span>
+                {% endif %}
+            </div>
+            <h3 class="mt-2 text-lg font-semibold text-gray-700">{{ address.full_name }}</h3>
+            <p class="text-gray-600">{{ address.street_address }}, {{ address.city }}, {{ address.state }}, {{ address.postal_code }}, {{ address.country }}</p>
+            <p class="text-gray-600 mt-1">📞 {{ address.phone }}</p>
+            
+            <div class="mt-4 flex gap-3">
+                <a href="{% url 'accounts:address_edit' address.pk %}" 
+                   class="px-4 py-1 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition">
+                   Edit
+                </a>
+                <a href="{% url 'accounts:address_delete' address.pk %}" 
+                   class="px-4 py-1 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition">
+                   Delete
+                </a>
+            </div>
+        </div>
+        {% empty %}
+        <p class="col-span-2 text-gray-500 text-center">No addresses found. Add your first address!</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+
+

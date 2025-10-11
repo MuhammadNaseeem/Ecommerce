@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Dashboard{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <div class="flex h-screen">
+
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-md hidden md:flex flex-col">
+            <div class="p-6 text-2xl font-bold border-b flex items-center justify-between">
+                Admin Panel
+            </div>
+            <nav class="p-4 flex-1 flex flex-col gap-2">
+                {% comment %} Dashboard {% endcomment %}
+                <a href="{% url 'core:dashboard' %}" class="flex items-center gap-2 py-2 px-3 rounded hover:bg-indigo-100 {% if request.resolver_match.url_name == 'dashboard' %}bg-indigo-200 font-semibold{% endif %}">
+                    <!-- Heroicon: Home -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"/>
+                    </svg>
+                    Dashboard
+                </a>
+
+                <!-- Products -->
+                <a href="{% url 'core:products_list' %}" class="flex items-center gap-2 py-2 px-3 rounded hover:bg-indigo-100 {% if request.resolver_match.url_name == 'products_list' %}bg-indigo-200 font-semibold{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 17l-4-4-4 4"/>
+                    </svg>
+                    Products
+                </a>
+
+                <!-- Orders -->
+                <a href="{% url 'core:orders_list' %}" class="flex items-center gap-2 py-2 px-3 rounded hover:bg-indigo-100 {% if request.resolver_match.url_name == 'orders_list' %}bg-indigo-200 font-semibold{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"/>
+                    </svg>
+                    Orders
+                </a>
+
+                <!-- Coupons -->
+                <a href="{% url 'core:coupons_list' %}" class="flex items-center gap-2 py-2 px-3 rounded hover:bg-indigo-100 {% if request.resolver_match.url_name == 'coupons_list' %}bg-indigo-200 font-semibold{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Coupons
+                </a>
+
+                <!-- Customers -->
+                <a href="{% url 'core:customers_list' %}" class="flex items-center gap-2 py-2 px-3 rounded hover:bg-indigo-100 {% if request.resolver_match.url_name == 'customers_list' %}bg-indigo-200 font-semibold{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A5 5 0 0112 15a5 5 0 016.879 2.804M12 11a5 5 0 100-10 5 5 0 000 10z"/>
+                    </svg>
+                    Customers
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 overflow-auto">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+</body>
+</html>
+
+

@@ -1,0 +1,71 @@
+{% extends "core/base.html" %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto bg-gradient-to-r from-pink-50 via-purple-50 to-indigo-50 shadow-2xl rounded-3xl p-10 mt-10">
+    <h2 class="text-4xl font-extrabold mb-10 text-indigo-700 drop-shadow-lg text-center">
+        🛍️ Checkout
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <!-- Left: Shipping + Payment -->
+        <div class="md:col-span-2 space-y-8">
+            <!-- Shipping Information -->
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition duration-300">
+                <h3 class="text-2xl font-semibold mb-5 text-purple-700">Shipping Information</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="text" name="full_name" placeholder="Full Name" class="w-full border rounded-lg px-4 py-3 focus:ring focus:ring-purple-200 focus:border-purple-300 shadow-sm">
+                    <input type="email" name="email" placeholder="Email Address" class="w-full border rounded-lg px-4 py-3 focus:ring focus:ring-purple-200 focus:border-purple-300 shadow-sm">
+                    <input type="text" name="address" placeholder="Street Address" class="w-full border rounded-lg px-4 py-3 focus:ring focus:ring-purple-200 focus:border-purple-300 shadow-sm col-span-2">
+                    <input type="text" name="city" placeholder="City" class="w-full border rounded-lg px-4 py-3 focus:ring focus:ring-purple-200 focus:border-purple-300 shadow-sm">
+                    <input type="text" name="zip_code" placeholder="ZIP Code" class="w-full border rounded-lg px-4 py-3 focus:ring focus:ring-purple-200 focus:border-purple-300 shadow-sm">
+                    <input type="text" name="country" placeholder="Country" class="w-full border rounded-lg px-4 py-3 focus:ring focus:ring-purple-200 focus:border-purple-300 shadow-sm">
+                </div>
+            </div>
+
+            <!-- Payment Method -->
+            <div class="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition duration-300">
+                <h3 class="text-2xl font-semibold mb-5 text-purple-700">Payment Method</h3>
+                <div class="space-y-3">
+                    <label class="flex items-center gap-3 border p-3 rounded-xl cursor-pointer hover:bg-purple-50 transition duration-300">
+                        <input type="radio" name="payment" value="card" checked class="accent-purple-500">
+                        <span class="font-medium">Credit / Debit Card (Stripe)</span>
+                    </label>
+                    <label class="flex items-center gap-3 border p-3 rounded-xl cursor-pointer hover:bg-purple-50 transition duration-300">
+                        <input type="radio" name="payment" value="cod" class="accent-purple-500">
+                        <span class="font-medium">Cash on Delivery</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Order Summary -->
+        <div class="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 border rounded-2xl p-6 shadow-xl hover:shadow-2xl transition duration-300">
+            <h3 class="text-2xl font-semibold mb-6 text-indigo-700 text-center">Order Summary</h3>
+            <div class="space-y-4">
+                {% for item in cart_items %}
+                    <div class="flex justify-between bg-white rounded-xl px-4 py-3 shadow hover:shadow-md transition duration-300">
+                        <span class="font-medium">{{ item.product.name }} (x{{ item.quantity }})</span>
+                        <span class="font-semibold text-indigo-600">Rs. {{ item.line_total|floatformat:2 }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="flex justify-between text-lg font-bold mt-6 border-t pt-4">
+                <span class="text-gray-700">Total:</span>
+                <span class="text-indigo-700 text-xl">Rs. {{ total_price|floatformat:2 }}</span>
+            </div>
+
+            <!-- Stripe Payment Button -->
+            <form method="POST" action="{% url 'cart:create_checkout_session' %}" class="mt-6">
+                {% csrf_token %}
+                <button type="submit"
+                    class="w-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-6 py-3 rounded-2xl text-lg font-semibold shadow-lg hover:scale-105 transition duration-300">
+                    💳 Pay with Stripe
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,112 @@
+{% extends "core/base.html" %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-pink-200 via-purple-200 to-indigo-200 py-16">
+    <div class="max-w-7xl mx-auto bg-white/80 backdrop-blur-md shadow-2xl rounded-3xl p-12 border border-indigo-100 animate-fadeIn">
+        <h2 class="text-5xl font-extrabold text-indigo-800 mb-12 text-center drop-shadow-lg animate-bounce">🛒 Checkout</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <!-- Left: Shipping + Payment -->
+            <div class="md:col-span-2 space-y-10">
+                {% if user.is_authenticated %}
+                    <div class="bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400 rounded-2xl shadow-xl p-6 border-2 border-indigo-300 hover:scale-105 transition transform">
+                        <h3 class="text-2xl font-semibold mb-5 text-white drop-shadow-lg">📍 Shipping Addresses</h3>
+                        {% if user.addresses.all %}
+                            <div class="space-y-3">
+                                {% for address in user.addresses.all %}
+                                    <label class="flex items-center justify-between bg-white/90 p-3 rounded-xl cursor-pointer hover:bg-white shadow-md transition transform">
+                                        <input type="radio" name="shipping_address" value="{{ address.id }}" {% if forloop.first %}checked{% endif %}>
+                                        <span class="text-gray-800 font-medium">{{ address.full_name }}, {{ address.street }}, {{ address.city }}, {{ address.country }} - {{ address.zip_code }}</span>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-white font-medium">No saved addresses. Fill in below:</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <div class="bg-gradient-to-r from-green-400 via-emerald-400 to-teal-400 rounded-2xl shadow-xl p-6 border-2 border-green-300 hover:scale-105 transition transform">
+                    <h3 class="text-2xl font-semibold mb-5 text-white drop-shadow-lg">📝 Shipping Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" name="full_name" placeholder="Full Name" class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-300">
+                        <input type="email" name="email" placeholder="Email Address" class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-300">
+                        <input type="text" name="address" placeholder="Street Address" class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-300 md:col-span-2">
+                        <input type="text" name="city" placeholder="City" class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-300">
+                        <input type="text" name="zip_code" placeholder="ZIP Code" class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-300">
+                        <input type="text" name="country" placeholder="Country" class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-300">
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 rounded-2xl shadow-xl p-6 border-2 border-yellow-300 hover:scale-105 transition transform">
+                    <h3 class="text-2xl font-semibold mb-5 text-white drop-shadow-lg">💳 Payment Method</h3>
+                    <div class="space-y-3">
+                        <label class="flex items-center gap-3 bg-white/90 p-3 rounded-xl cursor-pointer hover:bg-white shadow-md transition transform">
+                            <input type="radio" name="payment" value="card" checked>
+                            <span class="text-gray-800 font-medium">Credit / Debit Card (Stripe)</span>
+                        </label>
+                        <label class="flex items-center gap-3 bg-white/90 p-3 rounded-xl cursor-pointer hover:bg-white shadow-md transition transform">
+                            <input type="radio" name="payment" value="cod">
+                            <span class="text-gray-800 font-medium">Cash on Delivery</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Order Summary -->
+            <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl shadow-2xl p-8 border-2 border-indigo-400 hover:scale-105 transition transform">
+                <h3 class="text-3xl font-bold mb-6 text-white drop-shadow-lg">🛍️ Order Summary</h3>
+                <div class="space-y-4">
+                    {% for item in cart_items %}
+                        <div class="flex justify-between border-b border-white/50 pb-2 text-white font-medium">
+                            <span>{{ item.product.name }} (x{{ item.quantity }})</span>
+                            <span>Rs. {{ item.line_total|floatformat:2 }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-6 space-y-2 text-white font-semibold">
+                    <div class="flex justify-between"><span>Subtotal:</span><span>Rs. {{ subtotal|floatformat:2 }}</span></div>
+                    <div class="flex justify-between"><span>Shipping:</span><span>Rs. {{ shipping_fee|floatformat:2 }}</span></div>
+                    <div class="flex justify-between"><span>Tax (10%):</span><span>Rs. {{ tax|floatformat:2 }}</span></div>
+                    <div class="flex justify-between font-bold text-2xl mt-4 border-t border-white/50 pt-2">
+                        <span>Total:</span>
+                        <span>Rs. {{ total_price|floatformat:2 }}</span>
+                    </div>
+                </div>
+
+                <!-- Stripe Checkout -->
+                <form method="POST" action="{% url 'orders:create_checkout_session' %}" class="mt-6" id="stripe-form">
+                    {% csrf_token %}
+                    <button type="submit"
+                        class="w-full bg-gradient-to-r from-green-400 to-emerald-500 text-white px-6 py-3 rounded-3xl text-lg font-bold shadow-lg hover:scale-110 transition transform">
+                        ✅ Pay with Stripe
+                    </button>
+                </form>
+
+                <!-- COD Button -->
+                <button id="cod-button" class="w-full mt-4 bg-gradient-to-r from-gray-700 to-gray-900 text-white px-6 py-3 rounded-3xl font-bold shadow-lg hover:scale-110 transition transform">
+                    Cash on Delivery
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stripe JS -->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const codBtn = document.getElementById("cod-button");
+    const stripeForm = document.getElementById("stripe-form");
+
+    // COD
+    codBtn.addEventListener("click", function() {
+        alert("Cash on Delivery selected. Order will be processed on delivery.");
+        stripeForm.submit();
+    });
+});
+</script>
+{% endblock %}
+

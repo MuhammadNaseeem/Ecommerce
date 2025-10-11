@@ -1,0 +1,74 @@
+{% extends 'core/base.html' %}
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+  <div class="bg-white/20 backdrop-blur-lg shadow-2xl rounded-2xl w-full max-w-md p-10 border border-white/30 animate__animated animate__fadeIn">
+    <!-- Header -->
+    <h2 class="text-4xl font-extrabold text-white text-center mb-6">Create Account</h2>
+    <p class="text-center text-white/80 mb-8">Join us and explore the best shopping experience</p>
+
+    <!-- Signup Form -->
+    <form method="POST" class="space-y-6">
+      {% csrf_token %}
+
+      <!-- Show errors -->
+      {% if form.errors %}
+        <div class="mb-4 p-4 bg-red-500/80 text-white rounded-lg">
+          <ul class="list-disc list-inside text-sm">
+            {% for field, errors in form.errors.items %}
+              {% for error in errors %}
+                <li><strong>{{ field|capfirst }}</strong>: {{ error }}</li>
+              {% endfor %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+      {% if form.non_field_errors %}
+        <div class="mb-4 p-4 bg-red-500/80 text-white rounded-lg">
+          <ul class="list-disc list-inside text-sm">
+            {% for error in form.non_field_errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <!-- Render form fields -->
+      <div>
+        <label for="id_username" class="block text-sm font-semibold text-white">Username</label>
+        {{ form.username }}
+      </div>
+
+      <div>
+        <label for="id_email" class="block text-sm font-semibold text-white">Email</label>
+        {{ form.email }}
+      </div>
+
+      <div>
+        <label for="id_password1" class="block text-sm font-semibold text-white">Password</label>
+        {{ form.password1 }}
+      </div>
+
+      <div>
+        <label for="id_password2" class="block text-sm font-semibold text-white">Confirm Password</label>
+        {{ form.password2 }}
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit"
+              class="w-full py-3 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 text-white font-bold rounded-lg shadow-md hover:opacity-90 transition duration-300">
+        Sign Up
+      </button>
+    </form>
+
+    <!-- Footer -->
+    <p class="text-center text-white/80 mt-8">
+      Already have an account?
+      <a href="{% url 'accounts:login' %}" class="text-yellow-300 hover:underline font-semibold">Login</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+

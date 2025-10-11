@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Order Placed</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f3f4f6; padding: 20px;">
+  <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 15px;">
+    <h2 style="color: #4f46e5; text-align: center;">✅ Order Placed Successfully!</h2>
+    <p>Hi {{ order.shipping_address.full_name }},</p>
+    <p>Thank you for your order #<strong>{{ order.id }}</strong>. We are processing it and will notify you when it ships.</p>
+
+    <h3 style="color: #4f46e5;">Order Summary</h3>
+    <ul style="list-style: none; padding: 0;">
+      {% for item in order.items.all %}
+      <li style="margin-bottom: 8px;">
+        {{ item.product.name }} × {{ item.quantity }} — Rs. {{ item.subtotal|floatformat:2 }}
+      </li>
+      {% endfor %}
+    </ul>
+
+    <p><strong>Total: Rs. {{ order.total_price|floatformat:2 }}</strong></p>
+
+    <a href="{{ site_url }}/orders/{{ order.id }}/tracking" style="display: inline-block; margin-top: 20px; padding: 12px 24px; background-color: #4f46e5; color: white; border-radius: 10px; text-decoration: none;">🚚 Track Order</a>
+  </div>
+</body>
+</html>
+
+
+

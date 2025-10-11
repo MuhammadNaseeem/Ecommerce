@@ -1,0 +1,36 @@
+{% extends "core/base.html" %}
+{% block title %}Track Order{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-b from-purple-100 to-pink-100 py-12">
+    <div class="max-w-4xl mx-auto bg-white p-10 rounded-3xl shadow-lg">
+        <h2 class="text-3xl font-bold text-indigo-700 mb-8">Tracking Order #{{ order.id }}</h2>
+
+        <div class="space-y-6">
+            <div class="flex justify-between items-center mb-6">
+                <span class="font-semibold text-gray-700">Order Status:</span>
+                <span class="text-lg font-bold {% if order.status == 'Pending' %}text-yellow-500{% elif order.status == 'Paid' %}text-blue-500{% elif order.status == 'Shipped' %}text-indigo-600{% elif order.status == 'Completed' %}text-green-600{% elif order.status == 'Canceled' %}text-red-600{% endif %}">{{ order.status }}</span>
+            </div>
+
+            <!-- Progress bar -->
+            <div class="relative">
+                <div class="w-full h-3 bg-gray-300 rounded-full">
+                    <div class="h-3 rounded-full {% if order.status == 'Paid' %}w-1/4 bg-blue-500{% elif order.status == 'Shipped' %}w-1/2 bg-indigo-600{% elif order.status == 'Completed' %}w-full bg-green-600{% else %}w-1/4 bg-yellow-500{% endif %} transition-all duration-500"></div>
+                </div>
+                <div class="flex justify-between mt-2 text-sm text-gray-600">
+                    <span>Pending</span>
+                    <span>Paid</span>
+                    <span>Shipped</span>
+                    <span>Completed</span>
+                </div>
+            </div>
+
+            <h3 class="font-semibold text-gray-700 mt-6">Shipping Address</h3>
+            <p>{{ order.shipping_address.full_name }}</p>
+            <p>{{ order.shipping_address.address_line }}, {{ order.shipping_address.city }}, {{ order.shipping_address.country }} - {{ order.shipping_address.postal_code }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

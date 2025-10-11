@@ -1,0 +1,126 @@
+{% load cart_tags %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice #{{ order.id }}</title>
+    <style>
+        body {
+            font-family: 'Helvetica', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f8fafc;
+            color: #111827;
+        }
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1, h2, h3 {
+            color: #1e40af;
+        }
+        .header, .footer {
+            text-align: center;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #1e40af;
+            padding-bottom: 5px;
+        }
+        .address p, .totals div {
+            margin: 2px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table th, table td {
+            border: 1px solid #d1d5db;
+            padding: 10px;
+            text-align: left;
+        }
+        table th {
+            background: #e0e7ff;
+        }
+        .totals {
+            margin-top: 20px;
+            font-weight: 600;
+        }
+        .totals div {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header section">
+            <h1>Invoice</h1>
+            <p>Order #{{ order.id }} | Date: {{ order.created_at|date:"M d, Y" }}</p>
+        </div>
+
+        <!-- Customer / Shipping Address -->
+        {% if order.shipping_address %}
+        <div class="section address">
+            <div class="section-title">Shipping Address</div>
+            <p>{{ order.shipping_address.full_name }}</p>
+            <p>{{ order.shipping_address.street }}</p>
+            <p>{{ order.shipping_address.city }}, {{ order.shipping_address.zip_code }}</p>
+            <p>{{ order.shipping_address.country }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Order Items -->
+        <div class="section">
+            <div class="section-title">Order Items</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Qty</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>Rs. {{ item.price|floatformat:2 }}</td>
+                        <td>Rs. {{ item.quantity|multiply:item.price|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Totals -->
+        <div class="section totals">
+            <div><span>Subtotal:</span> <span>Rs. {{ order.subtotal|floatformat:2 }}</span></div>
+            <div><span>Shipping:</span> <span>Rs. {{ order.shipping_fee|floatformat:2 }}</span></div>
+            <div><span>Tax:</span> <span>Rs. {{ order.tax_amount|floatformat:2 }}</span></div>
+            <div><span>Total:</span> <span>Rs. {{ order.total_price|floatformat:2 }}</span></div>
+        </div>
+
+        <div class="footer section">
+            <p>Thank you for shopping with us!</p>
+        </div>
+    </div>
+</body>
+</html>
+
+

@@ -1,0 +1,103 @@
+{% extends "core/base.html" %}
+
+{% block title %}{% if category %}{{ category.name }} |{% endif %} Shop | E-Shop{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-pink-50 via-yellow-50 to-purple-50 px-6 py-12 animate-gradientBG">
+
+  <!-- Page Title -->
+  <h1 class="text-6xl font-extrabold mb-12 text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-yellow-500 to-indigo-600 drop-shadow-xl animate-pulse">
+    {% if category %} {{ category.name }} {% else %} ✨ All Products ✨ {% endif %}
+  </h1>
+
+  <!-- Product Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+    {% for product in products %}
+      <div class="bg-gradient-to-br from-pink-100 via-yellow-100 to-purple-100 border border-white rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transform hover:-translate-y-3 transition duration-500 relative group">
+
+        <!-- Discount Badge -->
+        {% if product.discount_percent %}
+          <span class="absolute top-3 left-3 bg-gradient-to-r from-red-500 via-pink-500 to-yellow-500 text-white text-sm font-semibold px-3 py-1 rounded-full shadow-lg animate-bounce">
+            -{{ product.discount_percent|floatformat:0 }}%
+          </span>
+        {% endif %}
+
+        <!-- Product Image -->
+        <a href="{% url 'products:product_detail' product.slug %}">
+          <img src="{{ product.image.url }}" alt="{{ product.name }}" 
+               class="w-full h-64 object-cover rounded-t-3xl group-hover:scale-110 transition duration-500 ease-in-out">
+        </a>
+
+        <div class="p-6">
+          <!-- Product Name -->
+          <a href="{% url 'products:product_detail' product.slug %}" 
+             class="block text-lg font-extrabold text-gray-900 hover:text-pink-600 transition duration-300">
+            {{ product.name }}
+          </a>
+
+          <!-- Price -->
+          <p class="mt-2 text-lg">
+            {% if product.discount_price %}
+              <span class="text-red-600 font-extrabold text-xl">${{ product.discount_price }}</span>
+              <span class="line-through ml-2 text-gray-400">${{ product.price }}</span>
+            {% else %}
+              <span class="text-indigo-600 font-extrabold text-xl">${{ product.price }}</span>
+            {% endif %}
+          </p>
+
+          <!-- Buttons -->
+          <div class="mt-5 flex gap-3">
+            <!-- Add to Cart -->
+            <form method="post" action="{% url 'cart:cart_add' product.id %}" class="flex-1">
+              {% csrf_token %}
+              <input type="hidden" name="quantity" value="1">
+              <button type="submit" 
+                class="w-full px-4 py-2 bg-gradient-to-r from-pink-500 via-yellow-500 to-indigo-500 text-white rounded-2xl hover:scale-105 hover:shadow-xl transition duration-300 font-semibold">
+                🛒 Add
+              </button>
+            </form>
+
+            <!-- Add to Wishlist -->
+            {% if user.is_authenticated %}
+              <form method="post" action="{% url 'products:add_to_wishlist' product.slug %}">
+                {% csrf_token %}
+                <button type="submit" 
+                  class="px-4 py-2 bg-gradient-to-r from-red-500 via-pink-500 to-yellow-500 text-white rounded-2xl hover:scale-110 hover:shadow-lg transition duration-300 font-bold">
+                  ❤️
+                </button>
+              </form>
+            {% else %}
+              <a href="{% url 'accounts:login' %}" 
+                 class="px-4 py-2 bg-gray-200 text-gray-700 rounded-2xl hover:bg-gray-300 hover:shadow-md transition duration-300 font-semibold">
+                ❤️ Login to Wishlist
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-gray-600 text-lg col-span-4 text-center animate-pulse">🚫 No products found.</p>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if products.has_other_pages %}
+    <div class="flex justify-center mt-12 space-x-2">
+      {% if products.has_previous %}
+        <a href="?page={{ products.previous_page_number }}" 
+           class="px-4 py-2 bg-white border rounded-lg shadow hover:bg-gradient-to-r from-pink-500 via-yellow-500 to-indigo-500 hover:text-white transition duration-300">« Prev</a>
+      {% endif %}
+      <span class="px-4 py-2 bg-gradient-to-r from-pink-500 via-yellow-500 to-indigo-500 text-white rounded-lg shadow font-bold">
+        Page {{ products.number }} of {{ products.paginator.num_pages }}
+      </span>
+      {% if products.has_next %}
+        <a href="?page={{ products.next_page_number }}" 
+           class="px-4 py-2 bg-white border rounded-lg shadow hover:bg-gradient-to-r from-pink-500 via-yellow-500 to-indigo-500 hover:text-white transition duration-300">Next »</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+
