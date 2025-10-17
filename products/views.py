@@ -53,15 +53,6 @@ def product_list(request, category_slug=None):
 # --------------------------
 # Product Detail (variants, reviews)
 # --------------------------
-<<<<<<< HEAD
-from django.shortcuts import render, get_object_or_404, redirect
-from django.db.models import Avg, Count
-from django.contrib import messages
-from .models import Product, ProductVariant, Review
-from .forms import ReviewForm
-
-=======
->>>>>>> db734771a5dbbe56ed367cbdbc60f0fd4a7986eb
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug)
     variants = ProductVariant.objects.filter(product=product)
@@ -72,14 +63,11 @@ def product_detail(request, slug):
     avg_rating = all_reviews.aggregate(avg=Avg('rating'))['avg'] or 0
     review_count = all_reviews.aggregate(count=Count('id'))['count']
 
-<<<<<<< HEAD
     # Calculate discount percentage
     discount_percent = None
     if product.discount_price:
         discount_percent = round(((product.price - product.discount_price) / product.price) * 100)
 
-=======
->>>>>>> db734771a5dbbe56ed367cbdbc60f0fd4a7986eb
     # Review form
     review_form = ReviewForm(request.POST or None)
     if request.method == "POST" and 'submit_review' in request.POST:
@@ -102,17 +90,10 @@ def product_detail(request, slug):
         "avg_rating": round(avg_rating, 1),
         "review_count": review_count,
         "review_form": review_form,
-<<<<<<< HEAD
         "discount_percent": discount_percent,  # pass discount percent to template
     })
 
 
-
-=======
-    })
-
-
->>>>>>> db734771a5dbbe56ed367cbdbc60f0fd4a7986eb
 # --------------------------
 # Wishlist
 # --------------------------
@@ -156,24 +137,6 @@ def move_to_cart(request, item_id):
     return redirect('cart:cart_detail')
 
 
-# --------------------------
-# Optional: Category Products (already covered in product_list_by_category)
-# --------------------------
-def category_products(request, slug):
-    category = get_object_or_404(Category, slug=slug)
-    products = Product.objects.filter(category=category, available=True)
-    return render(request, 'products/category_products.html', {
-        'category': category,
-        'products': products
-    })
-
-# products/views.py
-# products/views.py
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from cart.cart import Cart
-from products.models import Wishlist
-
 @login_required
 def move_all_to_cart(request):
     """
@@ -191,3 +154,17 @@ def move_all_to_cart(request):
 
     messages.success(request, "All wishlist items have been moved to your cart.")
     return redirect("products:wishlist")
+
+
+# --------------------------
+# Optional: Category Products
+# --------------------------
+def category_products(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    products = Product.objects.filter(category=category, available=True)
+    return render(request, 'products/category_products.html', {
+        'category': category,
+        'products': products
+    })
+
+

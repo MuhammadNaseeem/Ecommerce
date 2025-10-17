@@ -1,17 +1,25 @@
-from django.shortcuts import render
-from products.models import Product
-
-def home(request):
-    # Get only available products, order newest first, limit to 8 featured items
-    products = Product.objects.filter(available=True).order_by('-created_at')[:8]
-    return render(request, "core/home.html", {"products": products})
-
-
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.mail import send_mail
 from django.contrib import messages
 from django.conf import settings
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView
+from django.urls import reverse_lazy
+from django.contrib.auth import get_user_model
+from .models import Product, Category, Order, Coupon
 
+# Get the correct User model (custom or default)
+User = get_user_model()
+
+# ----------------------------
+# Home Page
+# ----------------------------
+def home(request):
+    products = Product.objects.filter(available=True).order_by('-created_at')[:8]
+    return render(request, "core/home.html", {"products": products})
+
+# ----------------------------
+# Contact Page
+# ----------------------------
 def contact(request):
     if request.method == "POST":
         name = request.POST.get("name")
@@ -25,8 +33,8 @@ def contact(request):
                 send_mail(
                     subject,
                     full_message,
-                    settings.DEFAULT_FROM_EMAIL,  # ✅ use your Gmail
-                    [settings.DEFAULT_FROM_EMAIL],  # ✅ send to your Gmail
+                    settings.DEFAULT_FROM_EMAIL,
+                    [settings.DEFAULT_FROM_EMAIL],
                     fail_silently=False,
                 )
                 messages.success(request, "Your message has been sent successfully!")
@@ -37,16 +45,9 @@ def contact(request):
 
     return render(request, "core/contact.html")
 
-from django.shortcuts import render, redirect
-from django.views.generic import TemplateView, ListView, CreateView, UpdateView
-from django.urls import reverse_lazy
-from django.contrib.auth import get_user_model
-from .models import Product, Category, Order, Coupon
-
-# Get the correct User model (custom or default)
-User = get_user_model()
-
-# Dashboard overview
+# ----------------------------
+# Admin Dashboard Overview
+# ----------------------------
 class AdminDashboardView(TemplateView):
     template_name = "admin/dashboard.html"
 
@@ -54,11 +55,13 @@ class AdminDashboardView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['total_sales'] = Order.objects.filter(status='delivered').count()
         context['total_revenue'] = sum(o.total_price for o in Order.objects.filter(status='delivered'))
-        context['total_customers'] = User.objects.count()  # Works with custom user model
+        context['total_customers'] = User.objects.count()
         context['low_stock'] = Product.objects.filter(stock__lte=5)
         return context
 
+# ----------------------------
 # Products
+# ----------------------------
 class ProductListView(ListView):
     model = Product
     template_name = "admin/products_list.html"
@@ -67,7 +70,7 @@ class ProductCreateView(CreateView):
     model = Product
     fields = ['name', 'category', 'price', 'stock', 'description']
     template_name = "admin/product_form.html"
-    success_url = reverse_lazy('core:products_list')  # Updated to correct app namespace
+    success_url = reverse_lazy('core:products_list')
 
 class ProductUpdateView(UpdateView):
     model = Product
@@ -75,7 +78,9 @@ class ProductUpdateView(UpdateView):
     template_name = "admin/product_form.html"
     success_url = reverse_lazy('core:products_list')
 
+# ----------------------------
 # Orders
+# ----------------------------
 class OrderListView(ListView):
     model = Order
     template_name = "admin/orders_list.html"
@@ -86,7 +91,9 @@ class OrderUpdateStatusView(UpdateView):
     template_name = "admin/order_update.html"
     success_url = reverse_lazy('core:orders_list')
 
+# ----------------------------
 # Coupons
+# ----------------------------
 class CouponListView(ListView):
     model = Coupon
     template_name = "admin/coupons_list.html"
@@ -103,10 +110,13 @@ class CouponUpdateView(UpdateView):
     template_name = "admin/coupon_form.html"
     success_url = reverse_lazy('core:coupons_list')
 
+# ----------------------------
 # Customers
+# ----------------------------
 class CustomerListView(ListView):
-    model = User  # Uses the custom User model now
+    model = User
     template_name = "admin/customers_list.html"
+
 
 
 # naseem.9423!
@@ -115,137 +125,3 @@ class CustomerListView(ListView):
 
 # https://myaccount.google.com
 # https://myaccount.google.com/apppasswords
-
-
-
-
-# Feature Checklist for a Polished B2C Django E-Commerce Template
-# 1. User Accounts & Authentication
-
-#  Signup / login / logout with email
-
-#  Password reset via email (already done ✅)
-
-#  User profile page with order history
-
-#  Address book (shipping / billing addresses)
-
-# 2. Product Management
-
-#  Product categories (e.g., electronics, clothing)
-
-#  Product detail page (images, description, price, stock)
-
-#  Product variants (size, color, etc.)
-
-#  Search & filtering (by price, category, tags)
-
-#  Wishlist / save for later
-
-# 3. Shopping Cart
-
-#  Add to cart (with quantity update)
-
-#  Remove items from cart
-
-#  Persistent cart (saved even after login/logout)
-
-#  Display subtotal, shipping, tax, total
-
-# 4. Checkout & Payments
-
-#  Guest checkout option
-
-#  Multiple shipping addresses
-
-#  Stripe (already done ✅)
-
-#  PayPal integration (optional)
-
-#  Cash on Delivery option
-
-# 5. Orders & Invoices
-
-#  Order confirmation page ✅
-
-#  Order tracking (status: pending, shipped, delivered)
-
-#  Downloadable invoice (PDF)
-
-#  Email notifications (order placed, shipped, delivered)
-
-
-
-
-# 6. Admin & Store Management
-
-#  Admin dashboard with sales overview
-
-#  Manage products, categories, stock
-
-#  Manage orders (change status, refund, cancel)
-
-#  Discount coupons & promo codes
-
-#  Customer management (list of customers, emails)
-
-
-
-
-# 7. UX & Frontend
-
-#  Tailwind CSS + responsive design (already using ✅)
-
-#  Modern checkout flow with progress steps (Cart → Shipping → Payment → Confirmation)
-
-#  Product image zoom & gallery slider
-
-#  Featured products & categories on homepage
-
-#  Reviews & ratings (star system)
-
-# 8. Extra Features for More Value
-
-#  Multi-currency support
-
-#  Multi-language support
-
-#  Newsletter subscription (Mailchimp/SendGrid integration)
-
-#  SEO-friendly URLs & meta tags
-
-#  Social login (Google, Facebook)
-
-# 🚀 Value After This Stage
-
-# You can sell it as a Django e-commerce template on marketplaces.
-
-# Price range: $500 – $2,000 (one-time license or multiple sales).
-
-# Perfect for freelancing gigs on Upwork/Fiverr (customizing for clients).
-
-
-
-# https://developer.paypal.com/
-
-<<<<<<< HEAD
-# 501234567
-
-
-# Variable Name	Variable Value
-# ALLOWED_HOSTS	b2c-6-production.up.railway.app
-# DJANGO_SECRET_KEY	your-secret-key (from your Django project)
-# DEBUG	False
-# EMAIL_HOST	smtp.gmail.com
-# EMAIL_PORT	587
-# EMAIL_USE_TLS	True
-# EMAIL_HOST_USER	your-email@gmail.com
-
-# EMAIL_HOST_PASSWORD	your Gmail App Password
-# STRIPE_PUBLIC_KEY	your Stripe public key
-# STRIPE_SECRET_KEY	your Stripe secret key
-# PAYPAL_CLIENT_ID	your PayPal sandbox/live client ID
-# PAYPAL_CLIENT_SECRET	your PayPal sandbox/live secret
-=======
-# 501234567
->>>>>>> db734771a5dbbe56ed367cbdbc60f0fd4a7986eb
