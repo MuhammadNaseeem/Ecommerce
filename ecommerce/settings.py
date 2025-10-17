@@ -16,11 +16,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ---------------------------------------------------------
 SECRET_KEY = config('DJANGO_SECRET_KEY', default='unsafe-secret-key')  # Set in Render environment
 DEBUG = config('DEBUG', default=False, cast=bool)
+
+
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='127.0.0.1,localhost,your-app-name.onrender.com',
+    default='127.0.0.1,localhost,b2c-6.onrender.com',
     cast=Csv()
 )
+
 
 # ---------------------------------------------------------
 # APPLICATIONS
