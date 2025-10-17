@@ -1,0 +1,65 @@
+{% extends "core/base.html" %}
+{% block content %}
+<div class="max-w-6xl mx-auto p-8 mt-10 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-3xl shadow-xl">
+  
+  <!-- Welcome -->
+  <div class="text-center mb-10">
+    <h2 class="text-4xl font-extrabold text-indigo-700 drop-shadow-sm">
+      👋 Welcome, <span class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-transparent bg-clip-text">{{ request.user.username }}</span>
+    </h2>
+    <p class="text-gray-600 mt-2 text-lg">Here’s your order history and recent activity.</p>
+  </div>
+
+  <!-- Orders Section -->
+  <div>
+    <h3 class="text-2xl font-bold mb-6 text-gray-800 border-b-2 border-indigo-200 pb-2">🛒 Order History</h3>
+
+    {% if orders %}
+      <div class="overflow-hidden rounded-2xl shadow-lg">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white text-lg">
+              <th class="px-6 py-4 text-left">Order ID</th>
+              <th class="px-6 py-4 text-left">Date</th>
+              <th class="px-6 py-4 text-left">Status</th>
+              <th class="px-6 py-4 text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+              <tr class="bg-white hover:bg-indigo-50 transition">
+                <td class="px-6 py-4 font-semibold text-gray-700">#{{ order.id }}</td>
+                <td class="px-6 py-4 text-gray-600">{{ order.created_at|date:"M d, Y" }}</td>
+                <td class="px-6 py-4">
+                  {% if order.status == "Pending" %}
+                    <span class="px-3 py-1 text-sm font-medium rounded-full bg-yellow-100 text-yellow-700">⏳ Pending</span>
+                  {% elif order.status == "Paid" %}
+                    <span class="px-3 py-1 text-sm font-medium rounded-full bg-green-100 text-green-700">💳 Paid</span>
+                  {% elif order.status == "Shipped" %}
+                    <span class="px-3 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-700">🚚 Shipped</span>
+                  {% elif order.status == "Completed" %}
+                    <span class="px-3 py-1 text-sm font-medium rounded-full bg-purple-100 text-purple-700">✅ Completed</span>
+                  {% elif order.status == "Canceled" %}
+                    <span class="px-3 py-1 text-sm font-medium rounded-full bg-red-100 text-red-700">❌ Canceled</span>
+                  {% else %}
+                    <span class="px-3 py-1 text-sm font-medium rounded-full bg-gray-100 text-gray-700">Unknown</span>
+                  {% endif %}
+                </td>
+                <td class="px-6 py-4 text-right font-bold text-gray-800">Rs. {{ order.total_price|floatformat:2 }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="text-center py-12">
+        <p class="text-gray-500 text-lg">😕 You have not placed any orders yet.</p>
+        <a href="{% url 'core:home' %}" 
+           class="inline-block mt-6 px-8 py-3 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-xl shadow-md hover:scale-105 transform transition">
+           Start Shopping
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

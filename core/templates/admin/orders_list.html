@@ -1,0 +1,50 @@
+{% extends 'core/admin/base.html' %}
+{% block title %}Orders{% endblock %}
+{% block page_title %}Orders{% endblock %}
+
+<div class="overflow-x-auto rounded-lg shadow">
+    <table class="min-w-full bg-white">
+        <thead class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
+            <tr>
+                <th class="py-3 px-4 text-left">Order ID</th>
+                <th class="py-3 px-4 text-left">Customer</th>
+                <th class="py-3 px-4 text-left">Total</th>
+                <th class="py-3 px-4 text-left">Status</th>
+                <th class="py-3 px-4 text-left">Created At</th>
+                <th class="py-3 px-4 text-left">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in object_list %}
+            <tr class="border-b hover:bg-gray-50 transition duration-200">
+                <td class="py-3 px-4">{{ order.id }}</td>
+                <td class="py-3 px-4">{{ order.user.get_full_name|default:order.user.email }}</td>
+                <td class="py-3 px-4 font-semibold text-indigo-600">${{ order.total_price }}</td>
+                <td class="py-3 px-4">
+                    <span class="px-2 py-1 rounded-lg text-white font-semibold
+                        {% if order.status == 'pending' %}bg-yellow-400
+                        {% elif order.status == 'shipped' %}bg-blue-500
+                        {% elif order.status == 'delivered' %}bg-green-500
+                        {% elif order.status == 'cancelled' %}bg-red-500
+                        {% endif %}">
+                        {{ order.status|capfirst }}
+                    </span>
+                </td>
+                <td class="py-3 px-4">{{ order.created_at|date:"d M Y, H:i" }}</td>
+                <td class="py-3 px-4 flex gap-2">
+                    <a href="{% url 'core:order_update' order.id %}" 
+                       class="bg-yellow-400 text-white px-3 py-1 rounded hover:bg-yellow-500 transition">
+                       Update
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="py-6 text-center text-gray-500">No orders found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+

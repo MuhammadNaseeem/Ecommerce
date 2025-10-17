@@ -1,0 +1,95 @@
+{% extends "core/base.html" %}
+{% block title %}Order Confirmation{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-indigo-100 py-12">
+    <div class="max-w-5xl mx-auto bg-white/90 backdrop-blur-md shadow-2xl rounded-3xl p-10">
+        <h2 class="text-4xl font-extrabold text-indigo-700 mb-6 drop-shadow-lg">✅ Order Confirmation</h2>
+
+        <!-- Order Info -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h3 class="text-2xl font-semibold text-indigo-600 mb-4">Order #{{ order.id }}</h3>
+            <div class="flex justify-between mb-2">
+                <span class="font-medium">Status:</span>
+                <span class="px-3 py-1 rounded-full 
+                    {% if order.status == 'Pending' %}bg-yellow-200 text-yellow-800
+                    {% elif order.status == 'Shipped' %}bg-blue-200 text-blue-800
+                    {% elif order.status == 'Completed' %}bg-green-200 text-green-800
+                    {% elif order.status == 'Canceled' %}bg-red-200 text-red-800
+                    {% endif %}">
+                    {{ order.status }}
+                </span>
+            </div>
+            <div class="flex justify-between mb-2">
+                <span>Payment Method:</span>
+                <span class="font-medium">{{ order.get_payment_method_display }}</span>
+            </div>
+            <div class="flex justify-between mb-2">
+                <span>Order Date:</span>
+                <span>{{ order.created_at|date:"M d, Y H:i" }}</span>
+            </div>
+        </div>
+
+        <!-- Shipping Address -->
+        {% if order.shipping_address %}
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h3 class="text-2xl font-semibold text-indigo-600 mb-4">Shipping Address</h3>
+            <p>{{ order.shipping_address.full_name }}</p>
+            <p>{{ order.shipping_address.street }}</p>
+            <p>{{ order.shipping_address.city }}, {{ order.shipping_address.zip_code }}</p>
+            <p>{{ order.shipping_address.country }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Order Items -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h3 class="text-2xl font-semibold text-indigo-600 mb-4">Order Items</h3>
+            <div class="space-y-3">
+                {% for item in order.items.all %}
+                    <div class="flex justify-between border-b pb-2">
+                        <span class="text-gray-700">{{ item.product.name }} (x{{ item.quantity }})</span>
+                        <span class="font-semibold text-indigo-700">Rs. {{ item.price|floatformat:2 }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Totals -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h3 class="text-2xl font-semibold text-indigo-600 mb-4">Order Summary</h3>
+            <div class="space-y-2 text-gray-800">
+                <div class="flex justify-between">
+                    <span>Subtotal:</span>
+                    <span>Rs. {{ order.subtotal|floatformat:2 }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Shipping:</span>
+                    <span>Rs. {{ order.shipping_fee|floatformat:2 }}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span>Tax:</span>
+                    <span>Rs. {{ order.tax_amount|floatformat:2 }}</span>
+                </div>
+                <div class="flex justify-between font-bold text-xl text-indigo-700 mt-2 border-t pt-2">
+                    <span>Total:</span>
+                    <span>Rs. {{ order.total_price|floatformat:2 }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex flex-col md:flex-row gap-4 justify-center">
+            <a href="{% url 'orders:generate_invoice_pdf' order.id %}" target="_blank"
+                class="w-full md:w-auto text-center bg-indigo-600 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:scale-105 transition transform">
+                📄 Download Invoice (PDF)
+            </a>
+            <a href="{% url 'home' %}"
+                class="w-full md:w-auto text-center bg-green-400 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg hover:scale-105 transition transform">
+                🏠 Continue Shopping
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

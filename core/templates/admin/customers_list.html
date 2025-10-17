@@ -1,0 +1,31 @@
+{% extends 'core/admin/base.html' %}
+{% block title %}Customers{% endblock %}
+
+{% block content %}
+<div class="overflow-x-auto rounded-lg shadow">
+    <table class="min-w-full bg-white">
+        <thead class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
+            <tr>
+                <th class="py-3 px-4 text-left">ID</th>
+                <th class="py-3 px-4 text-left">Name</th>
+                <th class="py-3 px-4 text-left">Email</th>
+                <th class="py-3 px-4 text-left">Joined</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in object_list %}
+            <tr class="border-b hover:bg-gray-50 transition duration-200">
+                <td class="py-3 px-4">{{ customer.id }}</td>
+                <td class="py-3 px-4">{{ customer.get_full_name|default:"-" }}</td>
+                <td class="py-3 px-4">{{ customer.email }}</td>
+                <td class="py-3 px-4">{{ customer.date_joined|date:"d M Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="py-6 text-center text-gray-500">No customers found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

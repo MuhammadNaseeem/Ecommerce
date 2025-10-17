@@ -1,0 +1,74 @@
+{% extends "core/base.html" %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 shadow-2xl rounded-3xl p-10 mt-10 animate-fadeIn">
+    <h2 class="text-4xl font-extrabold mb-10 text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 drop-shadow-lg text-center animate-pulse">
+        🛍️ Checkout
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+    <!-- Left: Shipping + Payment -->
+    <div class="md:col-span-2 space-y-8">
+        <!-- Shipping Information -->
+        <div class="bg-white/80 backdrop-blur-lg rounded-3xl p-6 shadow-2xl hover:shadow-pink-400 transition duration-300 transform hover:scale-105 border border-pink-200">
+            <h3 class="text-2xl font-extrabold mb-5 text-pink-600 drop-shadow-md">Shipping Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" name="full_name" placeholder="Full Name" class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-pink-300 focus:border-pink-300 shadow-md bg-white/90">
+                <input type="email" name="email" placeholder="Email Address" class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-pink-300 focus:border-pink-300 shadow-md bg-white/90">
+                <input type="text" name="address" placeholder="Street Address" class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-pink-300 focus:border-pink-300 shadow-md col-span-2 bg-white/90">
+                <input type="text" name="city" placeholder="City" class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-pink-300 focus:border-pink-300 shadow-md bg-white/90">
+                <input type="text" name="zip_code" placeholder="ZIP Code" class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-pink-300 focus:border-pink-300 shadow-md bg-white/90">
+                <input type="text" name="country" placeholder="Country" class="w-full border rounded-xl px-4 py-3 focus:ring-2 focus:ring-pink-300 focus:border-pink-300 shadow-md bg-white/90">
+            </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="bg-white/80 backdrop-blur-lg rounded-3xl p-6 shadow-2xl hover:shadow-purple-400 transition duration-300 transform hover:scale-105 border border-purple-200">
+            <h3 class="text-2xl font-extrabold mb-5 text-purple-600 drop-shadow-md">Payment Method</h3>
+            <div class="space-y-3">
+                <label class="flex items-center gap-3 border p-3 rounded-xl cursor-pointer hover:bg-gradient-to-r hover:from-purple-100 hover:to-pink-100 transition duration-300 bg-white/90 shadow-sm">
+                    <input type="radio" name="payment" value="card" checked class="accent-purple-500">
+                    <span class="font-medium">Credit / Debit Card (Stripe)</span>
+                </label>
+                <label class="flex items-center gap-3 border p-3 rounded-xl cursor-pointer hover:bg-gradient-to-r hover:from-purple-100 hover:to-pink-100 transition duration-300 bg-white/90 shadow-sm">
+                    <input type="radio" name="payment" value="cod" class="accent-purple-500">
+                    <span class="font-medium">Cash on Delivery</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+       <!-- Right: Order Summary -->
+<div class="bg-gradient-to-br from-indigo-200 via-purple-200 to-pink-200 border rounded-3xl p-6 shadow-2xl hover:shadow-pink-400 transition duration-300 transform hover:scale-105">
+    <h3 class="text-2xl font-extrabold mb-6 text-indigo-700 text-center drop-shadow-md">Order Summary</h3>
+    <div class="space-y-4">
+        {% for item in cart_items %}
+            <div class="flex justify-between bg-white/90 rounded-2xl px-4 py-3 shadow-md hover:shadow-indigo-300 transition duration-300 border border-indigo-100">
+                <span class="font-medium text-gray-800">{{ item.product.name }} (x{{ item.quantity }})</span>
+                <span class="font-semibold text-indigo-600">Rs. {{ item.line_total|floatformat:2 }}</span>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="flex justify-between text-lg font-bold mt-6 border-t pt-4">
+        <span class="text-gray-700">Total:</span>
+        <span class="text-indigo-700 text-xl">Rs. {{ total_price|floatformat:2 }}</span>
+    </div>
+
+    <!-- Stripe Payment Button -->
+    <form method="POST" action="{% url 'cart:create_checkout_session' %}" class="mt-6">
+        {% csrf_token %}
+        <button type="submit"
+            class="w-full bg-gradient-to-r from-pink-400 via-purple-500 to-indigo-600 text-white px-6 py-3 rounded-3xl text-lg font-bold shadow-lg hover:scale-105 hover:shadow-pink-400 transition duration-300">
+            💳 Pay with Stripe
+        </button>
+    </form>
+</div>
+
+    </div>
+</div>
+{% endblock %}
+
