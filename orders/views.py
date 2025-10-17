@@ -6,7 +6,11 @@ from django.contrib import messages
 from django.http import HttpResponse
 from decimal import Decimal
 import stripe
+<<<<<<< HEAD
 import paypalrestsdk
+=======
+# import paypalrestsdk
+>>>>>>> db734771a5dbbe56ed367cbdbc60f0fd4a7986eb
 from xhtml2pdf import pisa
 from django.template.loader import render_to_string, get_template
 
@@ -20,6 +24,7 @@ from django.conf import settings
 
 
 # -------------------- PAYMENT KEYS --------------------
+<<<<<<< HEAD
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 paypalrestsdk.configure({
@@ -27,6 +32,14 @@ paypalrestsdk.configure({
     "client_id": settings.PAYPAL_CLIENT_ID,
     "client_secret": settings.PAYPAL_CLIENT_SECRET,
 })
+=======
+import stripe
+
+# Stripe configuration
+stripe.api_key = settings.STRIPE_SECRET_KEY
+
+# ✅ PayPal removed, no need to configure anything for PayPal
+>>>>>>> db734771a5dbbe56ed367cbdbc60f0fd4a7986eb
 
 # -------------------- CHECKOUT PAGE --------------------
 def checkout(request):
@@ -277,6 +290,7 @@ def update_order_status(request, order_id, status):
     return redirect("admin:orders_order_change", order.id)
 
 
+<<<<<<< HEAD
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from decimal import Decimal
@@ -354,5 +368,77 @@ def paypal_success(request):
 def orders_home(request):
     # For example, show a list of user’s orders or redirect to checkout
     return redirect('orders:checkout')
+=======
+
+# from django.shortcuts import render, redirect
+# from django.urls import reverse
+# from decimal import Decimal
+# from paypalcheckoutsdk.orders import OrdersCreateRequest, OrdersCaptureRequest
+# from paypalcheckoutsdk.core import PayPalHttpClient, SandboxEnvironment
+
+# # PayPal sandbox credentials
+# CLIENT_ID = "YOUR_PAYPAL_CLIENT_ID"
+# CLIENT_SECRET = "YOUR_PAYPAL_CLIENT_SECRET"
+
+# environment = SandboxEnvironment(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
+# paypal_client = PayPalHttpClient(environment)
+
+
+# def create_paypal_payment(request):
+#     # Calculate total amount dynamically from the user's cart
+#     cart = request.session.get("cart", {})  # Assuming cart stored in session
+#     total_amount = sum(Decimal(item['price']) * item['quantity'] for item in cart.values())
+    
+#     if total_amount <= 0:
+#         return redirect('orders:checkout')
+
+#     request_order = OrdersCreateRequest()
+#     request_order.prefer("return=representation")
+#     request_order.request_body(
+#         {
+#             "intent": "CAPTURE",
+#             "purchase_units": [
+#                 {
+#                     "amount": {
+#                         "currency_code": "USD",
+#                         "value": str(total_amount)
+#                     }
+#                 }
+#             ],
+#             "application_context": {
+#                 "return_url": request.build_absolute_uri(reverse('orders:paypal_success')),
+#                 "cancel_url": request.build_absolute_uri(reverse('orders:checkout'))
+#             }
+#         }
+#     )
+
+#     try:
+#         response = paypal_client.execute(request_order)
+#         for link in response.result.links:
+#             if link.rel == "approve":
+#                 return redirect(link.href)
+#     except Exception as e:
+#         return render(request, "orders/paypal_error.html", {"error": str(e)})
+
+
+# def paypal_success(request):
+#     token = request.GET.get("token")  # PayPal returns token
+#     if token:
+#         # Capture the payment
+#         request_capture = OrdersCaptureRequest(token)
+#         request_capture.request_body({})
+#         try:
+#             capture_response = paypal_client.execute(request_capture)
+#             # Optional: Save order to DB here
+#             return render(request, "orders/paypal_success.html", {"capture": capture_response.result})
+#         except Exception as e:
+#             return render(request, "orders/paypal_error.html", {"error": str(e)})
+#     return redirect('orders:checkout')
+
+
+# def orders_home(request):
+#     # For example, show a list of user’s orders or redirect to checkout
+#     return redirect('orders:checkout')
+>>>>>>> db734771a5dbbe56ed367cbdbc60f0fd4a7986eb
 
 

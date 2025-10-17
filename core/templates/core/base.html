@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 {% load static %}
 
+=======
+>>>>>>> db734771a5dbbe56ed367cbdbc60f0fd4a7986eb
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +25,10 @@
         <div class="hidden md:flex items-center space-x-8">
             <a href="{% url 'core:home' %}" class="text-white/90 hover:text-yellow-300 font-medium transition">Home</a>
 
+<<<<<<< HEAD
             <!-- Categories Dropdown -->
+=======
+>>>>>>> db734771a5dbbe56ed367cbdbc60f0fd4a7986eb
 <!-- Categories Dropdown -->
 <div class="relative group inline-block">
     <button class="text-white/90 hover:text-yellow-300 font-medium flex items-center transition px-4 py-2">
@@ -31,12 +37,20 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
     </button>
+<<<<<<< HEAD
 
     <div class="absolute left-0 mt-2 w-56 bg-gray-800/95 backdrop-blur-md border border-gray-700 rounded-xl shadow-xl opacity-0 
                 group-hover:opacity-100 group-hover:visible invisible 
                 transition-all duration-300 transform scale-95 group-hover:scale-100 z-50">
 
         <!-- All Products Button -->
+=======
+    <div class="absolute left-0 mt-2 w-56 bg-gray-800/95 backdrop-blur-md border border-gray-700 rounded-xl shadow-xl opacity-0 
+                group-hover:opacity-100 group-hover:visible invisible 
+                transition-all duration-300 transform scale-95 group-hover:scale-100 z-50">
+        
+        <!-- 'All' Button -->
+>>>>>>> db734771a5dbbe56ed367cbdbc60f0fd4a7986eb
         <a href="{% url 'products:product_list' %}" 
            class="block px-5 py-3 text-gray-200 font-medium hover:bg-gradient-to-r hover:from-indigo-500 hover:to-purple-500 hover:text-white transition">
             All
@@ -53,7 +67,10 @@
     </div>
 </div>
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> db734771a5dbbe56ed367cbdbc60f0fd4a7986eb
             <a href="#" class="text-white/90 hover:text-yellow-300 font-medium transition">About</a>
             <a href="{% url 'core:contact' %}" class="text-white/90 hover:text-yellow-300 font-medium transition">Contact</a>
 
@@ -98,6 +115,7 @@
                 </span>
             </a>
 
+<<<<<<< HEAD
             <!-- Auth Buttons --><!-- Auth Buttons -->
 <div class="flex items-center space-x-5">
     {% if user.is_authenticated %}
@@ -131,6 +149,37 @@
 </div>
 
 </div>
+=======
+            <!-- Auth Buttons -->
+            {% if user.is_authenticated %}
+            <!-- User Dropdown -->
+            <div class="relative group inline-block">
+                <button class="bg-white/20 text-white px-5 py-2 rounded-full flex items-center space-x-2 hover:bg-white/30 transition">
+                    <span>{{ user.username }}</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="absolute right-0 mt-2 w-48 bg-gray-800/95 backdrop-blur-md border border-gray-700 rounded-xl shadow-xl opacity-0 
+                            group-hover:opacity-100 group-hover:visible invisible 
+                            transition-all duration-300 transform scale-95 group-hover:scale-100 z-50">
+                    <a href="{% url 'accounts:profile' %}" 
+                       class="block px-5 py-3 text-gray-200 hover:bg-gradient-to-r hover:from-indigo-500 hover:to-purple-500 hover:text-white transition">
+                        Profile
+                    </a>
+                    <a href="{% url 'accounts:logout' %}" 
+                       class="block px-5 py-3 text-red-400 hover:bg-red-600 hover:text-white transition">
+                        Logout
+                    </a>
+                </div>
+            </div>
+            {% else %}
+                <a href="{% url 'accounts:login' %}" class="hidden md:inline-block bg-white/20 text-white px-5 py-2 rounded-full hover:bg-white/30 transition">Login</a>
+                <a href="{% url 'accounts:signup' %}" class="hidden md:inline-block bg-yellow-400 text-gray-900 font-semibold px-5 py-2 rounded-full hover:bg-yellow-500 transition">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+>>>>>>> db734771a5dbbe56ed367cbdbc60f0fd4a7986eb
 </nav>
 
 

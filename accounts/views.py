@@ -118,6 +118,7 @@ def set_default_address(request, pk):
     
     messages.success(request, "Default address updated successfully!")
     return redirect('accounts:address_list')
+<<<<<<< HEAD
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -146,3 +147,5 @@ def login_view(request):
     return render(request, 'accounts/login.html', {'form': form, 'next': next_url})
 
 
+=======
+>>>>>>> db734771a5dbbe56ed367cbdbc60f0fd4a7986eb

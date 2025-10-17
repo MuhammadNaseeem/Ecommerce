@@ -228,6 +228,7 @@ class CustomerListView(ListView):
 
 # https://developer.paypal.com/
 
+<<<<<<< HEAD
 # 501234567
 
 
@@ -245,3 +246,6 @@ class CustomerListView(ListView):
 # STRIPE_SECRET_KEY	your Stripe secret key
 # PAYPAL_CLIENT_ID	your PayPal sandbox/live client ID
 # PAYPAL_CLIENT_SECRET	your PayPal sandbox/live secret
+=======
+# 501234567
+>>>>>>> db734771a5dbbe56ed367cbdbc60f0fd4a7986eb
